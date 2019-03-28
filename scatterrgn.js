@@ -49,6 +49,10 @@ var datasource = "data/ref_vs_petition_20190328180400.csv"
          
 }
 
+var colour_region = d3.scale.category20();
+
+
+
 function remove_spaces(text) {
   return text.replace(/\s/g,'')
 }
@@ -72,6 +76,10 @@ d3.csv(datasource, function(data) {
 
 
 var uniqueParty = data.map(function(d){ return d.polParty}).filter(function(value, index, self){
+    return self.indexOf(value) === index;
+});
+
+var uniqueRegion = data.map(function(d){ return d.regionname}).filter(function(value, index, self){
     return self.indexOf(value) === index;
 });
 
@@ -183,8 +191,8 @@ console.log(uniqueParty);
         })
       .attr("r", 5)
       .attr("transform", transform)
-      .attr("id" , function(d) { return remove_spaces(d.polParty); } )
-      .style("fill", function(d) {return colour_party(d.polParty);})
+      .attr("id" , function(d) { return remove_spaces(d.regionname); } )
+      .style("fill", function(d) {return colour_region(d.regionname);})
       .style("fill-opacity", 0.5)
       .style("stroke-width",2)
       .style("stroke-opacity",0)
@@ -195,7 +203,7 @@ console.log(uniqueParty);
 
   
   var legend = svg.selectAll(".legend")
-      .data(uniqueParty)
+      .data(uniqueRegion)
       .enter()  
       .append("g")
       .classed("legend", true)
@@ -212,7 +220,7 @@ console.log(uniqueParty);
   legend.append("circle")
       .attr("r", 8)
       .attr("cx", width + 20)
-      .style("fill", function(d) {return colour_party(d)})
+      .style("fill", function(d) {return colour_region(d)})
       .style("fill-opacity", 0.5)
       .style("stroke-width", 1)
       .style("stroke-opacity", 0.8)
